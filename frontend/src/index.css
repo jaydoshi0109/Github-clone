@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.sidebar-icon {
+    @apply p-2 flex justify-center items-center rounded-xl transition-all duration-300 bg-white/5 hover:bg-cyan-600 hover:text-white text-white/80 shadow-sm hover:scale-110;
+  }
+
+  .glassmorphism {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
