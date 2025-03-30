@@ -1,3 +1,3 @@
 export const handleLoginWithGithub = () => {
-	window.open("http://localhost:5000/api/auth/github", "_self");
+	window.open(`${import.meta.env.VITE_BACKEND_URL}/api/auth/github`, "_self");
 };

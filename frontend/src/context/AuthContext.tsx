@@ -31,7 +31,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     const checkUserLoggedIn = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/api/auth/check", { credentials: "include" });
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, { credentials: "include" });
         const data = await res.json();
         setAuthUser(data.user); // Ensure backend returns { username, avatarUrl }
       } catch (error: any) {

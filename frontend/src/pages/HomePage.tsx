@@ -8,6 +8,7 @@ import Search from "../components/Search";
 import SortRepos from "../components/SortRepos";
 import Spinner from "../components/Spinner";
 import { RepoType } from "../components/Repos";
+import LikeProfile from "../components/LikeProfile";
   
 const HomePage = () => {
 	const { userProfile, setUserProfile, repos, setRepos } = useUserProfile();
@@ -17,7 +18,7 @@ const HomePage = () => {
 	const getUserProfileAndRepos = useCallback(async (username = "jaydoshi0109") => {
 		setLoading(true);
 		try {
-			const res = await fetch(`http://localhost:5000/api/users/profile/${username}`);
+			const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${username}`);
 			const { repos, userProfile } = await res.json();
 			repos.sort((a: RepoType, b: RepoType) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 			setRepos(repos);
@@ -57,19 +58,24 @@ const HomePage = () => {
 	};
 
 	return (
+		
 		<div className='container mx-auto px-4 py-6 space-y-6'>
+			
 			<Search onSearch={onSearch} />
 			{repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
 			{loading && <Spinner />}
 			{!loading && (
 				<div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+					
 					{userProfile && (
-						<div className='lg:col-span-1 bg-white shadow-xl rounded-2xl p-6 glassmorphism'>
+						<div className='lg:col-span-1 bg-white shadow-xl rounded-2xl p-6 glassmorphism '>
+							
 							<ProfileInfo userProfile={userProfile} />
 						</div>
 					)}
 					{repos.length > 0 && (
 						<div className='lg:col-span-2 bg-white shadow-xl rounded-2xl p-6 glassmorphism'>
+							{userProfile && <LikeProfile userProfile={userProfile} />}
 							<Repos repos={repos} />
 						</div>
 					)}
