@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
 		},
 		likedProfiles: {
 			type: [String],
-			default: [],
+			default: [],	
 		},
 		likedBy: [
 			{
