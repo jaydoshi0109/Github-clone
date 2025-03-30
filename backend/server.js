@@ -4,7 +4,7 @@ import cors from "cors";
 import passport from "passport";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import path from "path";
+
 
 import "./passport/github.auth.js";
 import userRoutes from "./routes/user.route.js";
@@ -16,7 +16,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
+
 
 // Set up a persistent session store using connect-mongo
 const sessionStore = MongoStore.create({
