@@ -35,7 +35,8 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, { 
           credentials: "include",
           headers: {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            'Content-Type': 'application/json'
           }
         });
         console.log("Authentication response status:", res.status);
