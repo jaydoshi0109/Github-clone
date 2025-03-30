@@ -22,8 +22,8 @@ app.use(
 	cors({
 	  origin: process.env.CLIENT_BASE_URL, // e.g., "https://github-clone-silk-six.vercel.app"
 	  credentials: true,
-	  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-	  allowedHeaders: ["Content-Type", "Authorization"],
+	  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+	//   allowedHeaders: ["Content-Type", "Authorization"],
 	})
   );
   
