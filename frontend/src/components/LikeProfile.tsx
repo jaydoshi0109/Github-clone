@@ -76,7 +76,7 @@ const LikeProfile = ({ userProfile }: { userProfile: UserProfile }) => {
             onClick={handleLikeProfile}
             disabled={hasLiked} // Disable the button if already liked
         >
-            <FaHeart size={16} color={hasLiked ? "red" : undefined} /> {hasLiked ? "Liked" : "Like Profile"}
+            <FaHeart size={16} color={hasLiked ? "red" : "red"} /> {hasLiked ? "Liked" : "Tap to Like Profile"}
         </button>
     );
 };
