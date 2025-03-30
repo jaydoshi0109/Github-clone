@@ -8,14 +8,21 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 router.get(
     "/github/callback",
     passport.authenticate("github", { failureRedirect: process.env.CLIENT_BASE_URL + "/login" }),
-    function (req, res) {
+    function (req, res, next) {
         req.login(req.user, (err) => {
             if (err) {
                 console.error("Error during req.login:", err);
                 return next(err);
             }
             console.log("User logged in via req.login:", req.user);
-            res.redirect(process.env.CLIENT_BASE_URL);
+            req.session.save((saveErr) => {
+                if (saveErr) {
+                    console.error("Error saving session:", saveErr);
+                    return next(saveErr);
+                }
+                console.log("Session saved successfully.");
+                res.redirect(process.env.CLIENT_BASE_URL); // Redirect AFTER session is saved
+            });
         });
     }
 );
