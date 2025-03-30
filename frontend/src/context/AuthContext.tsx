@@ -31,10 +31,19 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     const checkUserLoggedIn = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, { credentials: "include" });
+        console.log("Checking authentication status...");
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, { 
+          credentials: "include",
+          headers: {
+            "Accept": "application/json"
+          }
+        });
+        console.log("Authentication response status:", res.status);
         const data = await res.json();
-        setAuthUser(data.user); // Ensure backend returns { username, avatarUrl }
+        console.log("Authentication data received:", data);
+        setAuthUser(data.user);
       } catch (error: any) {
+        console.error("Authentication error:", error);
         toast.error(error.message);
       } finally {
         setLoading(false);
