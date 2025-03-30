@@ -40,7 +40,7 @@ router.get("/check", (req, res) => {
     console.log("User in session:", req.user);
     
     if (req.isAuthenticated()) {
-        res.send({ user: req.user });
+        res.send({ user: req.user});
     } else {
         res.send({ user: null });
     }
