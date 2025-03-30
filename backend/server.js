@@ -22,7 +22,13 @@ const __dirname = path.resolve();
 app.use(session({
     secret: process.env.SESSION_SECRET || "keyboard cat", // Use an env var
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+	cookie: {
+		maxAge: 24 * 60 * 60 * 1000,
+		httpOnly: true,
+		sameSite: "none",
+		secure: true
+	}
 }));
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
