@@ -8,14 +8,23 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    console.log("Deserializing user:", user);
-    done(null, user);
-  } catch (err) {
-    done(err, null);
-  }
-});
+	console.log("Deserializing user, id:", id);
+	try {
+	  const user = await User.findById(id);
+	  if (!user) {
+		console.warn("User not found with id:", id);
+	  } else {
+		console.log("Deserialized user:", user);
+	  }
+	  done(null, user);
+	} catch (err) {
+	  console.error("Error in deserializeUser:", err);
+	  done(err, null);
+	}
+  });
+  
+
+
 
 passport.use(
   new GitHubStrategy(
