@@ -1,12 +1,12 @@
-export function formatMemberSince(inputDateString) {
-	const options = { month: "short", day: "2-digit", year: "numeric" };
+export function formatMemberSince(inputDateString : string) {
+	const options = { month: "short", day: "2-digit", year: "numeric" } as const;
 	const formattedDate = new Date(inputDateString).toLocaleDateString("en-US", options);
 	return formattedDate;
 }
 
 
 
-export function formatDate(inputDateString) {
+export function formatDate(inputDateString : string) {
 	const months = [
 		"January",
 		"February",
@@ -28,7 +28,7 @@ export function formatDate(inputDateString) {
 	const year = date.getFullYear();
 
 	// Function to add ordinal suffix to day
-	function getOrdinalSuffix(day) {
+	function getOrdinalSuffix(day : number) {
 		if (day >= 11 && day <= 13) {
 			return day + "th";
 		}
