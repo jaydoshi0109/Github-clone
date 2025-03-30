@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { toast } from "react-hot-toast";
 
+
 interface AuthUserType {
   username: string;
   avatarUrl: string;
@@ -18,10 +19,7 @@ export const AuthContext = createContext<AuthContextType>({
   loading: false,
 });
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useAuthContext = () => {
-  return useContext(AuthContext);
-};
+export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [authUser, setAuthUser] = useState<AuthUserType | null>(null);
@@ -32,12 +30,12 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
       setLoading(true);
       try {
         console.log("Checking authentication status...");
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, { 
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
           credentials: "include",
           headers: {
             "Accept": "application/json",
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         });
         console.log("Authentication response status:", res.status);
         const data = await res.json();
