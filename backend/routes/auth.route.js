@@ -37,7 +37,7 @@ router.get("/github/callback",
 router.get("/check", (req, res) => {
     console.log("Auth check called, authenticated:", req.isAuthenticated());
     console.log("Session ID:", req.sessionID);
-    console.log("User in session:", req.user);
+    console.log("User in session:", jsonStringify(req.user));
     
     if (req.isAuthenticated()) {
         res.send({ user: req.user});
