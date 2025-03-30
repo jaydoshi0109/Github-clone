@@ -7,7 +7,7 @@ import User from "../models/user.model.js";
 dotenv.config();
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id); // Serialize only the user ID
+    done(null, user._id); // Serialize only the user ID
 });
 
 passport.deserializeUser(async function (id, done) {

@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
-import path from "path";
 
 import "./passport/github.auth.js";
 
@@ -17,7 +16,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
 
 app.use(session({
     secret: process.env.SESSION_SECRET,  // Use an env var
