@@ -27,7 +27,8 @@ app.use(session({
 		maxAge: 24 * 60 * 60 * 1000,
 		httpOnly: true,
 		sameSite: "none",
-		secure: true
+		secure: true,
+		domain: "github-clone-wb09.onrender.com"
 	}
 }));
 // Initialize Passport!  Also use passport.session() middleware, to support
