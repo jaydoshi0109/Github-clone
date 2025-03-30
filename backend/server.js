@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || "keyboardcat", // Use an env var
+    secret: process.env.SESSION_SECRET,  // Use an env var
     resave: false,
     saveUninitialized: false,
 	cookie: {
