@@ -18,9 +18,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());  
 
-
-
-// Set up a persistent session store using connect-mongo
+app.use(
+	cors({
+	  origin: process.env.CLIENT_BASE_URL, // e.g., "https://github-clone-silk-six.vercel.app"
+	  credentials: true,
+	  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	  allowedHeaders: ["Content-Type", "Authorization"],
+	})
+  );
+  
+ 
+  // Set up a persistent session store using connect-mongo
 const sessionStore = MongoStore.create({
   mongoUrl: process.env.MONGO_URI,
   collectionName: "sessions",
@@ -48,14 +56,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // CORS configuration – ensure this matches your frontend URL exactly
-app.use(
-  cors({
-    origin: process.env.CLIENT_BASE_URL, // e.g., "https://github-clone-silk-six.vercel.app"
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
 
 
 // Optional: Debug middleware to log session and user info for each request
