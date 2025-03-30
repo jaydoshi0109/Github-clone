@@ -16,6 +16,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(express.json());  
+
 
 
 // Set up a persistent session store using connect-mongo
@@ -54,11 +56,19 @@ app.use(
   })
 );
 
+
 // Optional: Debug middleware to log session and user info for each request
 app.use((req, res, next) => {
   console.log(`Session ID: ${req.sessionID} | User: ${JSON.stringify(req.user)}`);
   next();
 });
+
+
+app.get("/api/test-session", (req, res) => {
+	req.session.test = req.session.test || "cookie-set";
+	res.send({ session: req.session, sessionID: req.sessionID });
+  });
+  
 
 // Set up routes
 app.use("/api/auth", authRoutes);
