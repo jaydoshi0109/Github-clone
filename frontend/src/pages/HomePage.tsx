@@ -9,6 +9,7 @@ import SortRepos from "../components/SortRepos";
 import Spinner from "../components/Spinner";
 import { RepoType } from "../components/Repos";
 import LikeProfile from "../components/LikeProfile";
+import TestSession from "../utils/TestSession";
   
 const HomePage = () => {
 	const { userProfile, setUserProfile, repos, setRepos } = useUserProfile();
@@ -60,7 +61,7 @@ const HomePage = () => {
 	return (
 		
 		<div className='container mx-auto px-4 py-6 space-y-6'>
-			
+			<TestSession/>
 			<Search onSearch={onSearch} />
 			{repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
 			{loading && <Spinner />}
