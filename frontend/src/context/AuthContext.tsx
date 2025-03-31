@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
-import { toast } from "react-hot-toast";
+
 
 
 interface AuthUserType {
@@ -29,7 +29,6 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     const checkUserLoggedIn = async () => {
       setLoading(true);
       try {
-        console.log("Checking authentication status...");
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
           credentials: "include",
           headers: {
@@ -37,18 +36,35 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
             "Content-Type": "application/json",
           },
         });
-        console.log("Authentication response status:", res.status);
+        
         const data = await res.json();
-        console.log("Authentication data received:", data);
-        setAuthUser(data.user);
+        
+        if (data.authenticated) {
+          setAuthUser(data.user);
+        } else {
+          // Clear any potential stale auth state
+          setAuthUser(null);
+          // Force logout if session exists but not authenticated
+          if (data.sessionExists) {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
+              credentials: "include",
+              method: "POST"
+            });
+          }
+        }
       } catch (error: any) {
         console.error("Authentication error:", error);
-        toast.error(error.message);
+        setAuthUser(null);
       } finally {
         setLoading(false);
       }
     };
+    
     checkUserLoggedIn();
+    
+    // Also check auth state after page load (for OAuth redirects)
+    window.addEventListener('load', checkUserLoggedIn);
+    return () => window.removeEventListener('load', checkUserLoggedIn);
   }, []);
 
   return (
