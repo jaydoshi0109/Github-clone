@@ -30,12 +30,12 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
       setLoading(true);
       try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
-          credentials: 'include'
+          credentials: 'include',  // Ensure cookies are sent
         });
-        
+  
         const data = await res.json();
         console.log('Auth check response:', data);
-        
+  
         if (data.authenticated) {
           setAuthUser(data.user);
         } else {
@@ -48,14 +48,10 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
         setLoading(false);
       }
     };
-
+  
     checkAuthStatus();
-    
-    // Check again after page load (for OAuth redirects)
-    const handleLoad = () => checkAuthStatus();
-    window.addEventListener('load', handleLoad);
-    return () => window.removeEventListener('load', handleLoad);
-  }, []);
+  }, []);  // This will run only on initial load
+  
 
   return (
     <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
