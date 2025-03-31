@@ -46,7 +46,7 @@ app.use(
       httpOnly: true,
       secure: true,// Use secure cookies in production (requires HTTPS)
       sameSite: "none",
-	  domain: process.env.BACKEND_URL,
+
     },
   })
 );

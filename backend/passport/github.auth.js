@@ -23,11 +23,16 @@ import User from "../models/user.model.js";
 // 	}
 //   });
 passport.serializeUser(function(user, done) {
-	done(null, user);
+	done(null, user.id);
   });
   
-  passport.deserializeUser(function(obj, done) {
-	done(null, obj);
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch (error) {
+      done(error, null);
+    }
   });
 
 

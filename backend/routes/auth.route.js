@@ -34,13 +34,15 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // );
 
 router.get("/github/callback",
-	passport.authenticate("github", { failureRedirect: process.env.CLIENT_BASE_URL + "/login" }),
-	(req, res) => {
-	  console.log("GitHub callback successful. User:", JSON.stringify(req.user));
-	  // No additional req.login; just redirect.
-	  res.redirect(process.env.CLIENT_BASE_URL);
-	}
-  );
+  passport.authenticate("github", { 
+    failureRedirect: process.env.CLIENT_BASE_URL + "/login",
+    session: true // Ensure session is enabled
+  }),
+  (req, res) => {
+    // Successful authentication, redirect home
+    res.redirect(process.env.CLIENT_BASE_URL);
+  }
+);
   
 
 // Add more logging to the /check route
@@ -50,7 +52,7 @@ router.get("/check", (req, res) => {
     console.log("User in session:", JSON.stringify(req.user));
     
     if (req.isAuthenticated()) {
-        res.send({ user: JSON.stringify(req.user)});
+        res.send({ user: req.user});
     } else {
         res.status(401).send({ user: null });
     }
