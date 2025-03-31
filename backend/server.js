@@ -52,6 +52,11 @@ app.use(
   })
 );
 
+
+
+// Initialize Passport and its session middleware
+app.use(passport.initialize());
+app.use(passport.session());
 app.use((req, res, next) => {
   console.log('Session:', {
     id: req.sessionID,
@@ -60,11 +65,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-
-// Initialize Passport and its session middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
 // CORS configuration – ensure this matches your frontend URL exactly
 
 
