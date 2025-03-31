@@ -18,53 +18,21 @@ router.post("/logout", (req, res, next) => {
 });
 
 // Enhanced check endpoint
-router.get("/check", async (req, res) => {
-  try {
-    // Force reload session from store
-    await new Promise(resolve => req.session.reload(resolve));
-    
-    if (req.isAuthenticated()) {
-      return res.json({
-        authenticated: true,
-        user: {
-          username: req.user.username,
-          avatarUrl: req.user.avatarUrl
-        }
-      });
-    }
-    
-    res.status(401).json({
-      authenticated: false,
-      sessionExists: !!req.sessionID
-    });
-  } catch (err) {
-    console.error('Auth check error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
+router.get("/check", (req, res) => {
+	if (req.isAuthenticated()) {
+		res.send({ user: req.user });
+	} else {
+		res.send({ user: null });
+	}
 });
 
 // GitHub callback with explicit session handling
-router.get("/github/callback", 
-  passport.authenticate("github", {
-    failureRedirect: process.env.CLIENT_BASE_URL + "/login?error=auth_failed"
-  }),
-  async (req, res) => {
-    try {
-      // Explicitly save session
-      await new Promise((resolve, reject) => {
-        req.session.save(err => {
-          if (err) return reject(err);
-          console.log('Session saved:', req.sessionID);
-          resolve();
-        });
-      });
-      
-      res.redirect(process.env.CLIENT_BASE_URL);
-    } catch (err) {
-      console.error('Callback error:', err);
-      res.redirect(process.env.CLIENT_BASE_URL + '/login?error=session_error');
-    }
-  }
+router.get(
+	"/github/callback",
+	passport.authenticate("github", { failureRedirect: process.env.CLIENT_BASE_URL + "/login" }),
+	function (req, res) {
+		res.redirect(process.env.CLIENT_BASE_URL);
+	}
 );
 
 export default router;
