@@ -70,7 +70,7 @@ app.use(passport.session());
 
 // Optional: Debug middleware to log session and user info for each request
 app.use((req, res, next) => {
-  console.log(`Session ID: ${req.sessionID} | User: req.user}`);
+  console.log(`Session ID: ${req.sessionID} | User: ${req.user}`);;
   next();
 });
 
