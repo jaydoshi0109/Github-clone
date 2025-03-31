@@ -1,10 +1,15 @@
-export const handleLoginWithGithub = () => {
-	// Clear any existing session first
-	fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
-	  credentials: "include",
-	  method: "POST"
-	}).finally(() => {
-	  // Open GitHub auth in same tab for proper cookie handling
+export const handleLoginWithGithub = async () => {
+	try {
+	  // Clear existing session first
+	  await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
+		method: 'POST',
+		credentials: 'include'
+	  });
+	  
+	  // Initiate GitHub auth
 	  window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/auth/github`;
-	});
+	} catch (error) {
+	  console.error('Logout failed:', error);
+	  window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/auth/github`;
+	}
   };

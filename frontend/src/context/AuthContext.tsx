@@ -26,45 +26,35 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkUserLoggedIn = async () => {
+    const checkAuthStatus = async () => {
       setLoading(true);
       try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
-          credentials: "include",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-          },
+          credentials: 'include'
         });
         
         const data = await res.json();
+        console.log('Auth check response:', data);
         
         if (data.authenticated) {
           setAuthUser(data.user);
         } else {
-          // Clear any potential stale auth state
           setAuthUser(null);
-          // Force logout if session exists but not authenticated
-          if (data.sessionExists) {
-            await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
-              credentials: "include",
-              method: "POST"
-            });
-          }
         }
-      } catch (error: any) {
-        console.error("Authentication error:", error);
+      } catch (error) {
+        console.error('Auth check failed:', error);
         setAuthUser(null);
       } finally {
         setLoading(false);
       }
     };
+
+    checkAuthStatus();
     
-    checkUserLoggedIn();
-    
-    // Also check auth state after page load (for OAuth redirects)
-    window.addEventListener('load', checkUserLoggedIn);
-    return () => window.removeEventListener('load', checkUserLoggedIn);
+    // Check again after page load (for OAuth redirects)
+    const handleLoad = () => checkAuthStatus();
+    window.addEventListener('load', handleLoad);
+    return () => window.removeEventListener('load', handleLoad);
   }, []);
 
   return (
