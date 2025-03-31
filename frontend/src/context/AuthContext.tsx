@@ -30,6 +30,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
       setLoading(true);
       try {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
+          method: 'GET',
           credentials: 'include',  // Ensure cookies are sent
         });
   
