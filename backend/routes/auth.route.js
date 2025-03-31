@@ -6,16 +6,7 @@ const router = express.Router();
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
 
 // Add this logout endpoint (POST method)
-router.post("/logout", (req, res, next) => {
-  req.logout((err) => {
-    if (err) return next(err);
-    req.session.destroy((err) => {
-      if (err) return next(err);
-      res.clearCookie('gh_clone.sid');
-      res.status(200).json({ message: "Logged out successfully" });
-    });
-  });
-});
+
 
 // Enhanced check endpoint
 router.get("/check", (req, res) => {
@@ -34,5 +25,16 @@ router.get(
 		res.redirect(process.env.CLIENT_BASE_URL);
 	}
 );
+
+router.post("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    req.session.destroy((err) => {
+      if (err) return next(err);
+      res.clearCookie('gh_clone.sid');
+      res.status(200).json({ message: "Logged out successfully" });
+    });
+  });
+});
 
 export default router;
