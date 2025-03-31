@@ -2,27 +2,7 @@ import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import User from "../models/user.model.js";
 
-// passport.serializeUser((user, done) => {
-//   console.log("Serializing user:", user._id);
-//   done(null, user._id);
-// });
-
-// passport.deserializeUser(async (id, done) => {
-// 	console.log("Deserializing user, id:", id);
-// 	try {
-// 	  const user = await User.findById(id);
-// 	  if (!user) {
-// 		console.warn("User not found with id:", id);
-// 	  } else {
-// 		console.log("Deserialized user:", user);
-// 	  }
-// 	  done(null, user);
-// 	} catch (err) {
-// 	  console.error("Error in deserializeUser:", err);
-// 	  done(err, null);
-// 	}
-//   });
-// Proper serialization/deserialization
+// Serialize and deserialize user
 passport.serializeUser((user, done) => {
   process.nextTick(() => {
     console.log('Serializing user:', user._id);
