@@ -35,53 +35,55 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 
 router.get("/github/callback",
   passport.authenticate("github", {
-    failureRedirect: process.env.CLIENT_BASE_URL + "/login",
-    failureMessage: true // Add failure message
+    failureRedirect: process.env.CLIENT_BASE_URL + "/login?error=github_failed",
+    session: true
   }),
-  (req, res) => {
-    console.log('Successful authentication, user:', req.user); // Debug log
-    // Set a fresh cookie after auth
-    req.session.regenerate(err => {
-      if (err) {
-        console.error('Session regeneration error:', err);
-        return res.redirect(process.env.CLIENT_BASE_URL + '/login?error=session');
-      }
-      req.session.save(() => {
-        res.redirect(process.env.CLIENT_BASE_URL);
+  async (req, res) => {
+    try {
+      // Force session save
+      await new Promise((resolve, reject) => {
+        req.session.save(err => {
+          if (err) return reject(err);
+          console.log('Session saved after auth:', req.sessionID);
+          resolve();
+        });
       });
-    });
+      
+      // Set user in session explicitly
+      req.session.user = req.user;
+      
+      res.redirect(process.env.CLIENT_BASE_URL);
+    } catch (err) {
+      console.error('GitHub callback error:', err);
+      res.redirect(process.env.CLIENT_BASE_URL + '/login?error=session_error');
+    }
   }
 );
-  
 
-// Add more logging to the /check route
-router.get("/check", (req, res) => {
-  console.log('Auth check - Session ID:', req.sessionID);
-  console.log('Auth check - Authenticated:', req.isAuthenticated());
-  console.log('Auth check - User:', req.user);
-  
-  if (req.isAuthenticated()) {
-    return res.json({ 
-      authenticated: true,
-      user: req.user 
-    });
-  }
-  
-  // If not authenticated but session exists
-  if (req.sessionID) {
-    console.log('Session exists but not authenticated');
-    return res.status(401).json({ 
+// Enhanced check endpoint
+router.get("/check", async (req, res) => {
+  try {
+    // Reload session from store
+    await new Promise(resolve => req.session.reload(resolve));
+    
+    if (req.isAuthenticated()) {
+      return res.json({
+        authenticated: true,
+        user: {
+          username: req.user.username,
+          avatarUrl: req.user.avatarUrl
+        }
+      });
+    }
+    
+    res.status(401).json({
       authenticated: false,
-      sessionExists: true,
-      sessionId: req.sessionID
+      sessionExists: !!req.sessionID
     });
+  } catch (err) {
+    console.error('Auth check error:', err);
+    res.status(500).json({ error: 'Server error' });
   }
-  
-  // No session at all
-  res.status(401).json({ 
-    authenticated: false,
-    sessionExists: false
-  });
 });
 
 router.get("/logout", (req, res) => {

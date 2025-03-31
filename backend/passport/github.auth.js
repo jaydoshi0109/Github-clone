@@ -22,18 +22,33 @@ import User from "../models/user.model.js";
 // 	  done(err, null);
 // 	}
 //   });
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
+// Proper serialization/deserialization
+passport.serializeUser((user, done) => {
+  process.nextTick(() => {
+    console.log('Serializing user:', user._id);
+    done(null, { 
+      id: user._id,
+      username: user.username 
+    });
   });
-  
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await User.findById(id);
-      done(null, user);
-    } catch (error) {
-      done(error, null);
+});
+
+passport.deserializeUser(async (obj, done) => {
+  try {
+    console.log('Deserializing user ID:', obj.id);
+    const user = await User.findById(obj.id);
+    if (!user) {
+      console.warn('User not found during deserialization');
+      return done(null, false);
     }
-  });
+    console.log('Successfully deserialized user:', user.username);
+    done(null, user);
+  } catch (err) {
+    console.error('Deserialization error:', err);
+    done(err);
+  }
+});
+
 
 
 

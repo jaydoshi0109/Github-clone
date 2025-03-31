@@ -18,14 +18,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());  
 
-app.use(
-	cors({
-	  origin: process.env.CLIENT_BASE_URL, // e.g., "https://github-clone-silk-six.vercel.app"
-	  credentials: true,
-	  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-	//   allowedHeaders: ["Content-Type", "Authorization"],
-	})
-  );
+app.use(cors({
+  origin: process.env.CLIENT_BASE_URL,
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['set-cookie']
+}));
   
  
   // Set up a persistent session store using connect-mongo
@@ -46,9 +45,11 @@ app.use(
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      // Remove domain property completely
+      path: '/',
+      // domain: process.env.COOKIE_DOMAIN || undefined // Only set if using subdomains
     },
-    name: 'github-clone.sid' // Add explicit session cookie name
+    name: 'gh_clone.sid', // Custom cookie name
+    rolling: true // Extends session on activity
   })
 );
 
