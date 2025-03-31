@@ -34,30 +34,55 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // );
 
 router.get("/github/callback",
-  passport.authenticate("github", { 
+  passport.authenticate("github", {
     failureRedirect: process.env.CLIENT_BASE_URL + "/login",
-    session: true // Ensure session is enabled
+    failureMessage: true // Add failure message
   }),
   (req, res) => {
-    // Successful authentication, redirect home
-    res.redirect(process.env.CLIENT_BASE_URL);
+    console.log('Successful authentication, user:', req.user); // Debug log
+    // Set a fresh cookie after auth
+    req.session.regenerate(err => {
+      if (err) {
+        console.error('Session regeneration error:', err);
+        return res.redirect(process.env.CLIENT_BASE_URL + '/login?error=session');
+      }
+      req.session.save(() => {
+        res.redirect(process.env.CLIENT_BASE_URL);
+      });
+    });
   }
 );
   
 
 // Add more logging to the /check route
 router.get("/check", (req, res) => {
-    console.log("Auth check called, authenticated:", req.isAuthenticated());
-    console.log("Session ID:", req.sessionID);
-    console.log("User in session:", JSON.stringify(req.user));
-    
-    if (req.isAuthenticated()) {
-        res.send({ user: req.user});
-    } else {
-        res.status(401).send({ user: null });
-    }
+  console.log('Auth check - Session ID:', req.sessionID);
+  console.log('Auth check - Authenticated:', req.isAuthenticated());
+  console.log('Auth check - User:', req.user);
+  
+  if (req.isAuthenticated()) {
+    return res.json({ 
+      authenticated: true,
+      user: req.user 
+    });
+  }
+  
+  // If not authenticated but session exists
+  if (req.sessionID) {
+    console.log('Session exists but not authenticated');
+    return res.status(401).json({ 
+      authenticated: false,
+      sessionExists: true,
+      sessionId: req.sessionID
+    });
+  }
+  
+  // No session at all
+  res.status(401).json({ 
+    authenticated: false,
+    sessionExists: false
+  });
 });
-
 
 router.get("/logout", (req, res) => {
 	req.session.destroy((err) => {

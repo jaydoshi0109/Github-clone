@@ -37,17 +37,18 @@ const sessionStore = MongoStore.create({
 // Configure session middleware with conditional cookie options
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "keyboardcat",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: true,// Use secure cookies in production (requires HTTPS)
-      sameSite: "none",
-
+      secure: true,
+      sameSite: 'none',
+      // Remove domain property completely
     },
+    name: 'github-clone.sid' // Add explicit session cookie name
   })
 );
 
